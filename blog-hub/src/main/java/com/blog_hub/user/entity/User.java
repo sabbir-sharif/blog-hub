@@ -1,18 +1,21 @@
 package com.blog_hub.user.entity;
 
+import com.blog_hub.post.entity.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 
-@AllArgsConstructor
-@NoArgsConstructor
+import java.util.List;
+
+//@AllArgsConstructor
+//@NoArgsConstructor
 @Entity
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -33,8 +36,9 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    //private List<Post> posts = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     @PrePersist
     public void onCreate() {
