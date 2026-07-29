@@ -30,5 +30,5 @@ public class CreateUserRequest {
     @Size(max = 300, message = "Bio cannot exceed 300 characters")
     private String bio;
 
-    //private String profileImage;
+    private String profileImage;
 }

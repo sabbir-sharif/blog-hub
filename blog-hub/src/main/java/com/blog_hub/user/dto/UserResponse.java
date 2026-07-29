@@ -19,7 +19,9 @@ public class UserResponse {
 
     private String profileImage;
 
-    private String role;
+    //private String role;
 
     private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

@@ -14,5 +14,5 @@ public class UpdateUserRequest {
     @Size(max = 300)
     private String bio;
 
-    //private String profileImage;
+    private String profileImage;
 }
