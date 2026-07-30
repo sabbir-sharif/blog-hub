@@ -1,11 +1,11 @@
 package com.blog_hub.user.dto;
 
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateUserRequest {
 
     @Size(min = 3, max = 50)

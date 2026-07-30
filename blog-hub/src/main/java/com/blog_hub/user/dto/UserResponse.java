@@ -1,12 +1,13 @@
 package com.blog_hub.user.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserResponse {
 
     private Long id;

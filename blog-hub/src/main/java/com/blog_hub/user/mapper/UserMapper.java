@@ -1,6 +1,5 @@
 package com.blog_hub.user.mapper;
 
-import ch.qos.logback.core.model.ComponentModel;
 import com.blog_hub.user.dto.CreateUserRequest;
 import com.blog_hub.user.dto.UpdateUserRequest;
 import com.blog_hub.user.dto.UserResponse;
