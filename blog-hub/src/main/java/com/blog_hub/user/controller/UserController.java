@@ -7,6 +7,7 @@ import com.blog_hub.user.dto.UpdateUserRequest;
 import com.blog_hub.user.dto.UserResponse;
 import com.blog_hub.user.entity.User;
 import com.blog_hub.user.service.UserService;
+import jakarta.validation.Valid;
 import jdk.dynalink.linker.LinkerServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,13 +50,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveUser(@RequestBody CreateUserRequest request){
+    public ResponseEntity<?> saveUser(@Valid @RequestBody CreateUserRequest request){
         UserResponse savedUser = userService.saveUser(request);
         return ResponseEntity.ok(savedUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable int id,
+    public ResponseEntity<?> updateUser(@Valid @PathVariable int id,
                                         @RequestBody UpdateUserRequest request){
         UserResponse updatedUser = userService.updateUser(id, request);
         return ResponseEntity.ok(updatedUser);

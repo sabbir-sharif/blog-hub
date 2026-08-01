@@ -5,6 +5,7 @@ import com.blog_hub.post.dto.PostResponse;
 import com.blog_hub.post.dto.UpdatePostRequest;
 import com.blog_hub.post.entity.Post;
 import com.blog_hub.post.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +32,13 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<?> savePost(@RequestBody CreatePostRequest request){
+    public ResponseEntity<?> savePost(@Valid @RequestBody CreatePostRequest request){
         PostResponse savedPost = postService.savePost(request);
         return ResponseEntity.ok(savedPost);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePost(@PathVariable int id,
+    public ResponseEntity<?> updatePost(@Valid @PathVariable int id,
                                         @RequestBody UpdatePostRequest request){
 
         PostResponse updatedPost = postService.updatePost(id, request);

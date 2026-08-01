@@ -1,5 +1,6 @@
 package com.blog_hub.user.service;
 
+import com.blog_hub.exception.ResourceNotFoundException;
 import com.blog_hub.post.dto.PostResponse;
 import com.blog_hub.post.entity.Post;
 import com.blog_hub.post.mapper.PostMapper;
@@ -41,14 +42,16 @@ public class UserService {
     }
 
     public UserResponse getUserById(int id) {
-        User user = userRepository.getById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
         return userMapper.toResponse(user);
     }
 
     public List<PostResponse> getPostsByUser(int id) {
 
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         List<PostResponse> responses = new ArrayList<>();
         for (Post post : user.getPosts()) {
@@ -70,7 +73,9 @@ public class UserService {
     }
 
     public UserResponse updateUser(int id, UpdateUserRequest request){
-        User user = userRepository.getById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
 
         userMapper.updateUserFromDto(request, user);
 

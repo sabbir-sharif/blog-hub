@@ -1,5 +1,6 @@
 package com.blog_hub.post.service;
 
+import com.blog_hub.exception.ResourceNotFoundException;
 import com.blog_hub.post.dto.CreatePostRequest;
 import com.blog_hub.post.dto.PostResponse;
 import com.blog_hub.post.dto.UpdatePostRequest;
@@ -33,7 +34,9 @@ public class PostService {
     }
 
     public PostResponse getPostById(int id) {
-        Post post = postRepository.getById(id);
+        Post post = postRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Post not found"));
 
         return postMapper.toResponse(post);
     }
@@ -47,7 +50,7 @@ public class PostService {
 
     public PostResponse updatePost(int id, UpdatePostRequest request){
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
 
         postMapper.updatePostFromDto(request, post);
 
