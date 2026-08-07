@@ -3,6 +3,7 @@ package com.blog_hub.security.user;
 import com.blog_hub.user.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -15,10 +16,13 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         // We'll add roles later
-        return List.of();
-
+        //return List.of();
+        return List.of(
+                new SimpleGrantedAuthority(
+                        "ROLE_" + user.getRole().getName()
+                )
+        );
     }
 
     @Override

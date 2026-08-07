@@ -5,6 +5,7 @@ import com.blog_hub.security.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -32,8 +33,52 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().permitAll())
+                        // PUBLIC
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login"
+                        ).permitAll()
+                        // READ POSTS
+                        // USER + ADMIN
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/posts",
+                                "/api/posts/**",
+                                "/api/users/*/posts",
+                                "/api/users/me"
+                        ).hasAnyRole("USER", "ADMIN")
+                        // CREATE POST
+                        // USER + ADMIN
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/posts"
+                        ).hasAnyRole("USER", "ADMIN")
+                        // UPDATE OWN POST
+                        // USER + ADMIN
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/posts/**"
+                        ).hasAnyRole("USER", "ADMIN")
+                        // UPDATE OWN PROFILE
+                        // USER + ADMIN
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/users/me"
+                        ).hasAnyRole("USER", "ADMIN")
+                        // DELETE POST
+                        // USER + ADMIN
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/posts/**"
+                        ).hasAnyRole("USER", "ADMIN")
+                        // DELETE USERS
+                        // ADMIN ONLY
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/users/**"
+                        ).hasRole("ADMIN")
+                        // EVERYTHING ELSE
+                        .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(
                         jwtAuthenticationFilter,

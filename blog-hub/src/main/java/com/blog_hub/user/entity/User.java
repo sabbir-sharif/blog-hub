@@ -1,6 +1,7 @@
 package com.blog_hub.user.entity;
 
 import com.blog_hub.post.entity.*;
+import com.blog_hub.role.entity.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,6 +30,10 @@ public class User {
 
     @Column(name = "profile_image")
     private String profileImage;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

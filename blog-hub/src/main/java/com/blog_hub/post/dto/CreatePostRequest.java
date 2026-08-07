@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 public class CreatePostRequest {
 
     @NotBlank(message = "Title is required")
-    @Size(min = 1, max = 10)
+    @Size(min = 1, max = 200)
     private String title;
 
     @NotBlank(message = "Content is required")
-    @Size(min = 50, max = 200)
+    @Size(min = 5, max = 200)
     private String content;
 
     private String status;
 
-    private Long userId;
+    //private Long userId;
 }

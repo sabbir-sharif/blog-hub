@@ -4,12 +4,14 @@ import com.blog_hub.exception.ResourceNotFoundException;
 import com.blog_hub.post.dto.PostResponse;
 import com.blog_hub.post.entity.Post;
 import com.blog_hub.post.mapper.PostMapper;
+import com.blog_hub.security.service.CurrentUserService;
 import com.blog_hub.user.dto.CreateUserRequest;
 import com.blog_hub.user.dto.UpdateUserRequest;
 import com.blog_hub.user.dto.UserResponse;
 import com.blog_hub.user.entity.User;
 import com.blog_hub.user.mapper.UserMapper;
 import com.blog_hub.user.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class UserService {
     UserMapper userMapper;
     @Autowired
     PostMapper postMapper;
+    @Autowired
+    CurrentUserService currentUserService;
 
 
     public List<UserResponse> getAllUser(){
@@ -39,6 +43,12 @@ public class UserService {
 //        return users.stream()
 //                .map(userMapper::toResponse)
 //                .toList();
+    }
+
+    public UserResponse getCurrentUser(){
+        User user = currentUserService.getCurrentUser();
+
+        return userMapper.toResponse(user);
     }
 
     public UserResponse getUserById(int id) {
@@ -91,5 +101,20 @@ public class UserService {
         }
         userRepository.deleteById(id);
         return ResponseEntity.ok(user);
+    }
+
+    public UserResponse updateMyProfile(
+            String email,
+            UpdateUserRequest request) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        userMapper.updateUserFromDto(request, user);
+
+        User updatedUser = userRepository.save(user);
+
+        return userMapper.toResponse(updatedUser);
     }
 }

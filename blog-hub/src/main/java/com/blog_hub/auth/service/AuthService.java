@@ -5,6 +5,8 @@ import com.blog_hub.auth.dto.LoginRequest;
 import com.blog_hub.auth.dto.RegisterRequest;
 import com.blog_hub.exception.DuplicateResourceException;
 import com.blog_hub.exception.ResourceNotFoundException;
+import com.blog_hub.role.entity.Role;
+import com.blog_hub.role.repository.RoleRepository;
 import com.blog_hub.security.jwt.JwtService;
 import com.blog_hub.security.service.CustomUserDetailsService;
 import com.blog_hub.user.dto.UserResponse;
@@ -28,12 +30,17 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final CustomUserDetailsService customUserDetailsService;
+    private final RoleRepository roleRepository;
 
     public UserResponse register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateResourceException("Email already exists");
         }
+
+        Role userRole = roleRepository.findByName("USER")
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User role not found"));
 
         User user = new User();
 
@@ -45,6 +52,7 @@ public class AuthService {
 
         user.setBio(request.getBio());
         user.setProfileImage(request.getProfileImage());
+        user.setRole(userRole);
 
         User savedUser = userRepository.save(user);
 
