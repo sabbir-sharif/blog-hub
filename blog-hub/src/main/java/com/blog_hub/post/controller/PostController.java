@@ -7,6 +7,8 @@ import com.blog_hub.post.entity.Post;
 import com.blog_hub.post.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,14 +22,16 @@ public class PostController {
     PostService postService;
 
     @GetMapping
-    public ResponseEntity<?> getAllPosts(){
-        List<PostResponse> posts = postService.getAllPosts();
+    public ResponseEntity<Page<PostResponse>> getAllPosts(Pageable pageable){
+        Page<PostResponse> posts = postService.getAllPosts(pageable);
+
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPostById(@PathVariable int id){
         PostResponse post = postService.getPostById(id);
+
         return ResponseEntity.ok(post);
     }
 

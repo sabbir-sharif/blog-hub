@@ -12,6 +12,8 @@ import com.blog_hub.security.service.CurrentUserService;
 import com.blog_hub.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -43,15 +45,16 @@ public class PostService {
         }
     }
 
-    public List<PostResponse> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
-        List<PostResponse> responses = new ArrayList<>();
+    public Page<PostResponse> getAllPosts(Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
+//        List<PostResponse> responses = new ArrayList<>();
+//
+//        for (Post post: posts){
+//            responses.add(postMapper.toResponse(post));
+//        }
 
-        for (Post post: posts){
-            responses.add(postMapper.toResponse(post));
-        }
-
-        return responses;
+//        return responses;
+        return posts.map(post -> postMapper.toResponse(post));
     }
 
     public PostResponse getPostById(int id) {
