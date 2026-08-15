@@ -1,5 +1,6 @@
 package com.blog_hub.post.controller;
 
+import com.blog_hub.common.respons.ApiResponse;
 import com.blog_hub.post.dto.CreatePostRequest;
 import com.blog_hub.post.dto.PostResponse;
 import com.blog_hub.post.dto.UpdatePostRequest;
@@ -30,10 +31,17 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPostById(@PathVariable int id){
+    public ResponseEntity<ApiResponse<PostResponse>> getPostById(@PathVariable int id){
         PostResponse post = postService.getPostById(id);
 
-        return ResponseEntity.ok(post);
+        //return ResponseEntity.ok(post);
+        return ResponseEntity.ok(
+                ApiResponse.<PostResponse>builder()
+                        .success(true)
+                        .message("Post retrieved successfully")
+                        .data(post)
+                        .build()
+        );
     }
 
     @PostMapping
