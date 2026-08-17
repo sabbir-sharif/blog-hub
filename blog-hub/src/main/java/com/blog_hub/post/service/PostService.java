@@ -88,7 +88,7 @@ public class PostService {
         return postMapper.toResponse(updatedPost);
     }
 
-    public ResponseEntity<?> deletePost(int id) {
+    public void deletePost(int id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Post not found"));
@@ -98,6 +98,6 @@ public class PostService {
 
         checkOwnership(post);
         postRepository.deleteById(id);
-        return ResponseEntity.ok(post);
+//        return ResponseEntity.ok(post);
     }
 }

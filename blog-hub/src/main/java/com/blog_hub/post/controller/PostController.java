@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,22 +46,43 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<?> savePost(@Valid @RequestBody CreatePostRequest request){
+    public ResponseEntity<ApiResponse<PostResponse>> savePost(@Valid @RequestBody CreatePostRequest request){
         PostResponse savedPost = postService.savePost(request);
-        return ResponseEntity.ok(savedPost);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        ApiResponse.<PostResponse>builder()
+                                .success(true)
+                                .message("Post created successfully")
+                                .data(savedPost)
+                                .build()
+                );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePost(@PathVariable int id,
+    public ResponseEntity<ApiResponse<PostResponse>> updatePost(@PathVariable int id,
                                         @Valid @RequestBody UpdatePostRequest request){
 
         PostResponse updatedPost = postService.updatePost(id, request);
-        return ResponseEntity.ok(updatedPost);
+        return ResponseEntity
+                .ok(
+                        ApiResponse.<PostResponse>builder()
+                                .success(true)
+                                .message("Post updated successfully")
+                                .data(updatedPost)
+                                .build()
+                );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable int id){
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable int id){
         postService.deletePost(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .success(true)
+                        .message("Post is deleted successfully")
+                        .data(null)
+                        .build()
+        );
     }
 }
