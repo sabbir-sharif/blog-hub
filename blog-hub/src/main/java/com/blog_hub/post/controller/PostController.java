@@ -25,10 +25,19 @@ public class PostController {
     PostService postService;
 
     @GetMapping
-    public ResponseEntity<Page<PostResponse>> getAllPosts(@PageableDefault(size = 5, page = 0) Pageable pageable){
+    public ResponseEntity<ApiResponse<Page<PostResponse>>> getAllPosts(
+            @PageableDefault(size = 5, page = 0)
+            Pageable pageable){
+
         Page<PostResponse> posts = postService.getAllPosts(pageable);
 
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(
+                ApiResponse.<Page<PostResponse>>builder()
+                        .success(true)
+                        .message("All post retrieved successfully")
+                        .data(posts)
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")
