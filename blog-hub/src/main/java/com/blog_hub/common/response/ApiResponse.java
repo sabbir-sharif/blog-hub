@@ -1,4 +1,4 @@
-package com.blog_hub.common.respons;
+package com.blog_hub.common.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

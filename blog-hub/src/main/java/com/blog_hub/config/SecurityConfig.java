@@ -1,5 +1,7 @@
 package com.blog_hub.config;
 
+import com.blog_hub.security.handler.JwtAccessDeniedHandler;
+import com.blog_hub.security.handler.JwtAuthenticationEntryPoint;
 import com.blog_hub.security.jwt.JwtAuthenticationFilter;
 import com.blog_hub.security.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -79,6 +83,10 @@ public class SecurityConfig {
                         ).hasRole("ADMIN")
                         // EVERYTHING ELSE
                         .anyRequest().authenticated())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(
                         jwtAuthenticationFilter,

@@ -1,10 +1,9 @@
 package com.blog_hub.post.controller;
 
-import com.blog_hub.common.respons.ApiResponse;
+import com.blog_hub.common.response.ApiResponse;
 import com.blog_hub.post.dto.CreatePostRequest;
 import com.blog_hub.post.dto.PostResponse;
 import com.blog_hub.post.dto.UpdatePostRequest;
-import com.blog_hub.post.entity.Post;
 import com.blog_hub.post.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
