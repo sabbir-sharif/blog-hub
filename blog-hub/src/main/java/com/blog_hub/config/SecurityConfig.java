@@ -44,7 +44,8 @@ public class SecurityConfig {
                         // PUBLIC
                         .requestMatchers(
                                 "/api/auth/register",
-                                "/api/auth/login"
+                                "/api/auth/login",
+                                "/api/auth/refresh"
                         ).permitAll()
                         // READ POSTS
                         // USER + ADMIN

@@ -2,9 +2,12 @@ package com.blog_hub.auth.service;
 
 import com.blog_hub.auth.dto.AuthResponse;
 import com.blog_hub.auth.dto.LoginRequest;
+import com.blog_hub.auth.dto.RefreshTokenRequest;
 import com.blog_hub.auth.dto.RegisterRequest;
 import com.blog_hub.exception.DuplicateResourceException;
 import com.blog_hub.exception.ResourceNotFoundException;
+import com.blog_hub.refresh.entity.RefreshToken;
+import com.blog_hub.refresh.service.RefreshTokenService;
 import com.blog_hub.role.entity.Role;
 import com.blog_hub.role.repository.RoleRepository;
 import com.blog_hub.security.jwt.JwtService;
@@ -31,6 +34,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final CustomUserDetailsService customUserDetailsService;
     private final RoleRepository roleRepository;
+    private final RefreshTokenService refreshTokenService;
 
     public UserResponse register(RegisterRequest request) {
 
@@ -83,19 +87,62 @@ public class AuthService {
         );
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
 
         UserDetails userDetails =
                 customUserDetailsService.loadUserByUsername(
                         request.getEmail()
                 );
 
+        // JWT generate
         String token = jwtService.generateToken(userDetails);
+
+        // refresh token generate
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
         return AuthResponse.builder()
                 .token(token)
-                .message("Login Successful")
+                .refreshToken(refreshToken.getToken())
+//                .message("Login Successful")
                 .build();
         //return new AuthResponse("Login Successful");
+    }
+
+    public AuthResponse refreshAccessToken(
+            RefreshTokenRequest request) {
+
+        // Find refresh token in database
+        RefreshToken refreshToken =
+                refreshTokenService.findByToken(request.getRefreshToken());
+
+        // Check expiration
+        refreshTokenService.verifyExpiration(refreshToken);
+
+        // Get associated user
+        User user = refreshToken.getUser();
+
+        // Load UserDetails
+        UserDetails userDetails =
+                customUserDetailsService.loadUserByUsername(user.getEmail());
+
+        // Generate new access token
+        String newToken = jwtService.generateToken(userDetails);
+
+        return AuthResponse.builder()
+                .token(newToken)
+                .refreshToken(refreshToken.getToken())
+//                .message("Access token refreshed successfully")
+                .build();
+    }
+
+    public void logout(String email) {
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        refreshTokenService.deleteByUser(user);
     }
 }
