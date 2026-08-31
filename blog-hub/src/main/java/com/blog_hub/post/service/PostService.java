@@ -12,6 +12,7 @@ import com.blog_hub.security.service.CurrentUserService;
 import com.blog_hub.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,7 @@ public class PostService {
         return posts.map(post -> postMapper.toResponse(post));
     }
 
+    @Cacheable(value = "posts", key = "#id")
     public PostResponse getPostById(int id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->

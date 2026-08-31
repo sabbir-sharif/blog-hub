@@ -1,5 +1,8 @@
 package com.blog_hub.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,19 +20,35 @@ public class RedisConfig {
     public CacheManager cacheManager(
             RedisConnectionFactory redisConnectionFactory) {
 
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // Support LocalDateTime, LocalDate, etc.
+        objectMapper.registerModule(new JavaTimeModule());
+
+        // Allow type information for cached objects
+        objectMapper.activateDefaultTyping(
+                BasicPolymorphicTypeValidator.builder()
+                        .allowIfSubType("com.blog_hub")
+                        .build(),
+                ObjectMapper.DefaultTyping.NON_FINAL
+        );
+
+        GenericJackson2JsonRedisSerializer serializer =
+                new GenericJackson2JsonRedisSerializer(objectMapper);
+
         RedisCacheConfiguration configuration =
                 RedisCacheConfiguration.defaultCacheConfig()
+
                         .serializeKeysWith(
                                 RedisSerializationContext.SerializationPair
                                         .fromSerializer(
                                                 new StringRedisSerializer()
                                         )
                         )
+
                         .serializeValuesWith(
                                 RedisSerializationContext.SerializationPair
-                                        .fromSerializer(
-                                                new GenericJackson2JsonRedisSerializer()
-                                        )
+                                        .fromSerializer(serializer)
                         );
 
         return RedisCacheManager.builder(
