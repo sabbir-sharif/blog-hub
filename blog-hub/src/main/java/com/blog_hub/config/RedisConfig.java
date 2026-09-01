@@ -13,6 +13,8 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.time.Duration;
+
 @Configuration
 public class RedisConfig {
 
@@ -38,6 +40,8 @@ public class RedisConfig {
 
         RedisCacheConfiguration configuration =
                 RedisCacheConfiguration.defaultCacheConfig()
+
+                        .entryTtl(Duration.ofMinutes(1))
 
                         .serializeKeysWith(
                                 RedisSerializationContext.SerializationPair
