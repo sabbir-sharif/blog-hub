@@ -58,3 +58,35 @@ public class RedisConfig {
                 .build();
     }
 }
+
+/*
+    @Configuration
+    public class RedisConfig {
+
+        @Bean
+        public CacheManager cacheManager(
+                RedisConnectionFactory redisConnectionFactory) {
+
+            RedisCacheConfiguration configuration =
+                    RedisCacheConfiguration.defaultCacheConfig()
+                            .serializeKeysWith(
+                                    RedisSerializationContext.SerializationPair
+                                            .fromSerializer(
+                                                    new StringRedisSerializer()
+                                            )
+                            )
+                            .serializeValuesWith(
+                                    RedisSerializationContext.SerializationPair
+                                            .fromSerializer(
+                                                    new GenericJackson2JsonRedisSerializer()
+                                            )
+                            );
+
+            return RedisCacheManager.builder(
+                            redisConnectionFactory
+                    )
+                    .cacheDefaults(configuration)
+                    .build();
+        }
+    }
+*/

@@ -12,6 +12,8 @@ import com.blog_hub.security.service.CurrentUserService;
 import com.blog_hub.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -77,6 +79,7 @@ public class PostService {
         return postMapper.toResponse(savedPost);
     }
 
+    @CachePut(value = "posts", key = "#id")
     public PostResponse updatePost(int id, UpdatePostRequest request){
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
@@ -90,6 +93,7 @@ public class PostService {
         return postMapper.toResponse(updatedPost);
     }
 
+    @CacheEvict(value = "posts", key = "#id")
     public void deletePost(int id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->
