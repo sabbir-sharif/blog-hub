@@ -94,3 +94,45 @@ public class RedisConfig {
         }
     }
 */
+
+/* custom ttl for different cached objects
+
+    @Configuration
+    public class RedisConfig {
+
+        @Bean
+        public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.activateDefaultTyping(
+                    BasicPolymorphicTypeValidator.builder().allowIfSubType("com.blog_hub").build(),
+                    ObjectMapper.DefaultTyping.NON_FINAL
+            );
+
+            GenericJackson2JsonRedisSerializer serializer =
+                    new GenericJackson2JsonRedisSerializer(objectMapper);
+
+            // 1. Create your BASE configuration (Default)
+            RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
+                    .entryTtl(Duration.ofMinutes(1))
+                    .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                    .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
+
+            // 2. Create a MAP for specific cache names and their custom TTLs
+            Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
+
+            // "longLivedCache" gets a 1-hour TTL instead of 1 minute
+            cacheConfigurations.put("longLivedCache", defaultConfig.entryTtl(Duration.ofHours(1)));
+
+            // "shortLivedCache" gets a 30-second TTL
+            cacheConfigurations.put("shortLivedCache", defaultConfig.entryTtl(Duration.ofSeconds(30)));
+
+            // 3. Pass the map to the builder
+            return RedisCacheManager.builder(redisConnectionFactory)
+                    .cacheDefaults(defaultConfig) // Fallback for caches not in the map
+                    .withInitialCacheConfigurations(cacheConfigurations) // Apply the map here
+                    .build();
+        }
+    }
+*/
