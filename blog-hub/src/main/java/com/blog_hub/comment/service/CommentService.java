@@ -7,6 +7,7 @@ import com.blog_hub.comment.entity.Comment;
 import com.blog_hub.comment.mapper.CommentMapper;
 import com.blog_hub.comment.repository.CommentRepository;
 import com.blog_hub.exception.ResourceNotFoundException;
+import com.blog_hub.exception.UnauthorizedException;
 import com.blog_hub.post.entity.Post;
 import com.blog_hub.post.repository.PostRepository;
 import com.blog_hub.user.entity.User;
@@ -113,9 +114,7 @@ public class CommentService {
 
         // Ownership check
         if (!comment.getUser().getEmail().equals(email)) {
-            throw new org.springframework.security.access.AccessDeniedException(
-                    "You can only update your own comment"
-            );
+            throw new UnauthorizedException("You are not allowed to modify this post");
         }
 
         // Update entity from DTO
@@ -145,8 +144,8 @@ public class CommentService {
 
         // Ownership check
         if (!comment.getUser().getEmail().equals(email)) {
-            throw new org.springframework.security.access.AccessDeniedException(
-                    "You can only delete your own comment"
+            throw new UnauthorizedException(
+                    "You are not allowed to delete this comment"
             );
         }
 
