@@ -115,16 +115,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthorized(
+    public ResponseEntity<ApiResponse<Void>> handleUnauthorized(
             UnauthorizedException ex,
             HttpServletRequest request) {
 
-        ErrorResponse response = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.FORBIDDEN.value())
-                .error("Forbidden")
+        ApiResponse response = ApiResponse.builder()
+                .success(false)
                 .message(ex.getMessage())
-                .path(request.getRequestURI())
+                .data(null)
                 .build();
 
         return ResponseEntity
